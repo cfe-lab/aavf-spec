@@ -32,14 +32,28 @@ class Header(object):
 class Record(object):
     """AAVF Record
     """
-    def __init__(self, CHROM, GENE, POS, REF, ALT):
-        pass
+    def __init__(self, CHROM, GENE, POS, REF, ALT, FILTER, ALT_FREQ,
+                 COVERAGE, INFO='.'):
+        self.CHROM = CHROM
+        self.GENE = GENE
+        self.POS = POS
+        self.REF = REF
+        self.ALT = ALT
+        self.FILTER = FILTER
+        self.ALT_FREQ = ALT_FREQ
+        self.COVERAGE = COVERAGE
+        self.INFO = INFO
 
     def __eq__(self, other):
         pass
 
     def __lt__(self, other):
-        pass
+        # it is not sufficient that the genes are the same if we're
+        # comparing positions from different reference coordinates
+        return self.GENE == other.GENE and self.POS < other.POS 
+
+    def __str__(self):
+        return "Record(CHROM=%(CHROM)s, GENE=%(GENE)s, POS=%(POS)s, REF=%(REF)s, ALT=%(ALT)s)" % self.__dict__
 
 
 class AAVF(object):
