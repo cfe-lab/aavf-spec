@@ -5,25 +5,36 @@ from aavf.model import Header, Record
 
 class Reader(object):
     def __init__(self, path):
-        self.header, rest = parse_header(fd)
-        self.records = map(parse_record, rest)
-    
-    def parse_header(self, fd):
+        self.reader = open(path)
+        self._parse_header()
+        self.records = map(self.parse_record, self.reader)
+   
+    def _parse_header(self):
         fileDate = None
         ref = None
         info = []
-        for line in fd.readline():
-            if line.split()[0] != '#CHROM':
-                return fd
+        line = next(self.reader)
+        while line.startswith('##'):
+            l = line.strip()[2:]
+            ## process header lines
+            if l.startswith('INFO'):
+                info.append(l.split('=')[1])
+            elif l.startswith('reference'):
+                ref = l.split('=')[1]
+            elif l.startswith('fileDate'):
+                fileDate = l.split('=')[1]
 
-        return Header(fileDate=fileDate, ref=ref, info=info)
+            line = next(self.reader)
 
-    def parse_record(self, line):
-        r = line.strip().split() 
-        return Record(r[0], r[1], r[2], r[3], r[4], r[5], r[6])
+        self.header = Header(fileDate=fileDate, reference=ref, info=info)
+
+    @staticmethod
+    def parse_record(line):
+        r = line.split() 
+        return Record(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7])
 
     def __iter__(self):
-        return self.records
+        return self.records 
 
 
 class Writer(object):
@@ -43,4 +54,3 @@ class Writer(object):
 
         self.info = []
         self.filters = []
-

@@ -1,10 +1,11 @@
-import aavf
-
 class Header(object):
     """AAVF Header
     """
-    def __init__(self, ref=None, fileformat='AAVFv0.1', fileDate=None):
-        pass 
+    def __init__(self, reference=None, source='AAVFv0.1', fileDate=None, info=[]):
+        self.reference = reference
+        self.source = source
+        self.fileDate = fileDate
+        self.info = info
 
     def __str__(self):
         return "Header(ref=\"{}\", fileDate=\"{}\")".format(self.reference,
@@ -29,8 +30,8 @@ class Record(object):
         pass
 
     def __lt__(self, other):
-        # it is not sufficient that the genes are the same if we're
-        # comparing positions from different reference coordinates
+        # it would be better if we also check that the reference
+        # coordinate system was the same
         return self.GENE == other.GENE and self.POS < other.POS 
 
     def __str__(self):
