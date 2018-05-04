@@ -18,7 +18,9 @@ class Reader(object):
             l = line.strip()[2:]
             ## process header lines
             if l.startswith('INFO'):
-                info.append(l.split('=')[1])
+                pass
+                # TODO: implement <key=value,..> parser 
+                ##info.append(l.split('=')[1])
             elif l.startswith('reference'):
                 ref = l.split('=')[1]
             elif l.startswith('fileDate'):
@@ -31,7 +33,8 @@ class Reader(object):
     @staticmethod
     def parse_record(line):
         r = line.split() 
-        return Record(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7])
+        return Record(*r) # splat the line until we implement input validation
+#        return Record(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7])
 
     def __iter__(self):
         return self.records 

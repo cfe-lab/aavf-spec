@@ -1,9 +1,9 @@
 from aavf import Reader
 
+import unittest
 
 a = Reader("example.aavf")
 print(a.header)
-print(a.header.info)
 for r in a:
     print(r)
 
