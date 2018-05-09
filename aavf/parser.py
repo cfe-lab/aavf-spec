@@ -33,15 +33,14 @@ class Reader(object):
     @staticmethod
     def parse_record(line):
         r = line.split() 
-        return Record(*r) # splat the line until we implement input validation
-#        return Record(r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7])
+        return Record(*r) # splat the line, validate input in Record.__init__
 
     def __iter__(self):
         return self.records 
 
 
 class Writer(object):
-    def __init__(self, ref=None, fileDate=None):
+    def __init__(self, fd, ref=None, fileDate=None):
 
         if ref is not None:
             ref = pathlib.Path(ref)
@@ -57,3 +56,9 @@ class Writer(object):
 
         self.info = []
         self.filters = []
+        self.fd = fd
+        print(Header(reference=self.reference, fileDate=fileDate), file=self.fd)
+
+
+    def writerecord(self, row):
+        print(Record(*row), file=self.fd)

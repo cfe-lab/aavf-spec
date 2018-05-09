@@ -1,6 +1,6 @@
 # Formal AAVF syntax
 
-```EBNF
+```ebnf
 <aavf>          ::= <header><column names><record>+
 <header>        ::= <header field>+
 <header field>  ::= "##" <string> "=" (<params>|<string>)
