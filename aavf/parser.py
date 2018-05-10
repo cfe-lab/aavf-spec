@@ -1,7 +1,9 @@
-from datetime import date
-import pathlib
-import hashlib
 from aavf.model import Header, Record
+
+def parsekv(s):
+    # internal function for parsing key-value pairs
+    s = s.split('<')[1].split('>')[0]
+    return {kv[0]: kv[1] for kv in map(lambda x: x.split('='), s.split(','))}
 
 class Reader(object):
     def __init__(self, path):
@@ -22,7 +24,8 @@ class Reader(object):
                 # TODO: implement <key=value,..> parser 
                 ##info.append(l.split('=')[1])
             elif l.startswith('reference'):
-                ref = l.split('=')[1]
+                # parse key-value pairs from ref line
+                ref = parsekv(l)
             elif l.startswith('fileDate'):
                 fileDate = l.split('=')[1]
 
@@ -40,25 +43,9 @@ class Reader(object):
 
 
 class Writer(object):
-    def __init__(self, fd, ref=None, fileDate=None):
-
-        if ref is not None:
-            ref = pathlib.Path(ref)
-            if not ref.exists():
-                raise Exception
-            self.reference = {'URI': pathlib.Path(ref).as_uri(),
-                              'SHA256': sha256(open(ref, 'rb')),
-                              'ACCESSION': None}
-        
-        if fileDate is None:
-            fileDate = date.today().isoformat().replace('-', '')
-        self.fileDate = fileDate
-
-        self.info = []
-        self.filters = []
+    def __init__(self, fd, header=Header()):
         self.fd = fd
-        print(Header(reference=self.reference, fileDate=fileDate), file=self.fd)
-
+        print(header, file=self.fd)
 
     def writerecord(self, row):
-        print(Record(*row), file=self.fd)
+        print(row, file=self.fd)
