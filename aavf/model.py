@@ -37,9 +37,13 @@ class Header(object):
         s = []
         if self.reference:
             s.append("##reference=<" + ','.join(["{}={}".format(k,
-                self.reference[k]) for k in self.reference.keys()]))
+                self.reference[k]) for k in self.reference.keys()]) + '>')
         s.append("##fileDate=" + self.fileDate)
         s.append("##source=" + self.source)
+
+        # always last:
+        s.append('\t'.join(["#CHROM", "GENE", "POS", "REF", "ALT", "FILTER",
+        "ALT_FREQ", "COVERAGE INFO"]))
         return '\n'.join(s)
 
 
